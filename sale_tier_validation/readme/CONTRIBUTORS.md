@@ -4,3 +4,6 @@
 - Tharathip Chaweewongphan \<<tharathipc@ecosoft.co.th>\>
 - [Dynapps](https://www.dynapps.eu):
   - Bert Van Groenendael \<<bert.vangroenendael@dynapps.eu>\>
+- [Quartile](https://www.quartile.co):
+  - Aung Ko Ko Lin
+- Panithan hongthong \<<panithank@ecosoft.co.th>\>

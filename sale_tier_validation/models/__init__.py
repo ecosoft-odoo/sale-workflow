@@ -3,3 +3,5 @@
 
 from . import sale_order
 from . import tier_definition
+from . import res_company
+from . import res_config_settings

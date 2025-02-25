@@ -50,6 +50,10 @@ To configure this module, you need to:
 1. Go to *Settings > Technical > Tier Validations > Tier Definition*.
 2. Create as many tiers as you want for Sale Order model.
 
+If necessary, update the "Block Printing of Unvalidated Quotations"
+under *Sales > Configuration > Settings* to block the printing of
+quotation when the order has yet to be validated (disabled by default).
+
 Usage
 =====
 
@@ -63,18 +67,18 @@ To use this module, you need to:
 
 Additional features:
 
--  You can filter the SOs requesting your review through the filter
-   *Needs my Review*.
--  User with rights to confirm the SO (validate all tiers that would be
-   generated) can directly do the operation, this is, there is no need
-   for her/him to request a validation.
+- You can filter the SOs requesting your review through the filter
+  *Needs my Review*.
+- User with rights to confirm the SO (validate all tiers that would be
+  generated) can directly do the operation, this is, there is no need
+  for her/him to request a validation.
 
 Known issues / Roadmap
 ======================
 
--  The sales order, when moved to the state sent, will still send the
-   email even if the validation is not approved by the corresponding
-   tier. Code to consider this particular case is not developed.
+- The sales order, when moved to the state sent, will still send the
+  email even if the validation is not approved by the corresponding
+  tier. Code to consider this particular case is not developed.
 
 Bug Tracker
 ===========
@@ -97,15 +101,21 @@ Authors
 Contributors
 ------------
 
--  Mayank Gosai <mgosai@opensourceintegrators.com>
--  `Tecnativa <https://www.tecnativa.com>`__:
+- Mayank Gosai <mgosai@opensourceintegrators.com>
+- `Tecnativa <https://www.tecnativa.com>`__:
 
-   -  Sergio Teruel
+  - Sergio Teruel
 
--  Tharathip Chaweewongphan <tharathipc@ecosoft.co.th>
--  `Dynapps <https://www.dynapps.eu>`__:
+- Tharathip Chaweewongphan <tharathipc@ecosoft.co.th>
+- `Dynapps <https://www.dynapps.eu>`__:
 
-   -  Bert Van Groenendael <bert.vangroenendael@dynapps.eu>
+  - Bert Van Groenendael <bert.vangroenendael@dynapps.eu>
+
+- `Quartile <https://www.quartile.co>`__:
+
+  - Aung Ko Ko Lin
+
+- Panithan hongthong <panithank@ecosoft.co.th>
 
 Maintainers
 -----------

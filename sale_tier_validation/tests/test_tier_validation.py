@@ -1,6 +1,6 @@
 # Copyright 2020 Sergio Teruel <sergio.teruel@tecnativa.com>
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
-from odoo.exceptions import ValidationError
+from odoo.exceptions import UserError, ValidationError
 from odoo.tests import common, tagged
 
 from odoo.addons.base.tests.common import DISABLED_MAIL_CONTEXT
@@ -11,7 +11,7 @@ class TestSaleTierValidation(common.TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.env = cls.env(context=dict(cls.env.context, **DISABLED_MAIL_CONTEXT))
+        cls.env = cls.env['base'].with_context(**DISABLED_MAIL_CONTEXT).env
         # Get sale order model
         cls.so_model = cls.env.ref("sale.model_sale_order")
 
@@ -71,8 +71,77 @@ class TestSaleTierValidation(common.TransactionCase):
         )
         with self.assertRaises(ValidationError):
             so.action_confirm()
-        so.order_line.price_unit = 45
-        so.request_validation()
-        so.with_user(self.test_user_1).validate_tier()
+        so.order_line.price_unit = 55
+        reviews = so.request_validation()
+        self.assertTrue(reviews)
+        record = so.with_user(self.test_user_1.id)
+        record.invalidate_model()
+        record.validate_tier()
         so.action_confirm()
         self.assertEqual(so.state, "sale")
+
+    def test_block_print_unvalidated_sale_order(self):
+        so = self.env["sale.order"].create(
+            {
+                "partner_id": self.customer.id,
+                "order_line": [
+                    (
+                        0,
+                        0,
+                        {
+                            "name": "Test line",
+                            "product_id": self.product.id,
+                            "product_uom_qty": 1,
+                            "product_uom": self.product.uom_id.id,
+                            "price_unit": self.product.list_price,
+                        },
+                    )
+                ],
+            }
+        )
+        so.company_id.sale_report_print_block = True
+        report = self.env["report.sale.report_saleorder"]
+        # Attempt to render the report before validation
+        with self.assertRaises(UserError):
+            report._get_report_values(docids=[so.id])
+        so.request_validation()
+        with self.assertRaises(UserError):
+            report._get_report_values(docids=[so.id])
+        record = so.with_user(self.test_user_1.id)
+        record.invalidate_model()
+        record.validate_tier()
+        # Attempt to render the report after validation
+        report._get_report_values(docids=[so.id])
+
+    def test_block_print_unvalidated_sale_order_raw(self):
+        so = self.env["sale.order"].create(
+            {
+                "partner_id": self.customer.id,
+                "order_line": [
+                    (
+                        0,
+                        0,
+                        {
+                            "name": "Test line",
+                            "product_id": self.product.id,
+                            "product_uom_qty": 1,
+                            "product_uom": self.product.uom_id.id,
+                            "price_unit": self.product.list_price,
+                        },
+                    )
+                ],
+            }
+        )
+        so.company_id.sale_report_print_block = True
+        report = self.env["report.sale.report_saleorder_raw"]
+        # Attempt to render the report before validation
+        with self.assertRaises(UserError):
+            report._get_report_values(docids=[so.id])
+        so.request_validation()
+        with self.assertRaises(UserError):
+            report._get_report_values(docids=[so.id])
+        record = so.with_user(self.test_user_1.id)
+        record.invalidate_model()
+        record.validate_tier()
+        # Attempt to render the report after validation
+        report._get_report_values(docids=[so.id])
